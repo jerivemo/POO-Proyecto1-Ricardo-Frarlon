@@ -16,7 +16,7 @@ Objetivos
 =============================
 Students: Ricardo Rodriguez Vengas Frarlon
 
-Teacher: Oscar Víquez. Technological Institute of Costa Rica, San Carlos headquarters
+Teacher: Oscar Víquez. Technological Institute of Costa Rica, San Carlos
 
 Administration Schedule for IC-SSC courses
 
