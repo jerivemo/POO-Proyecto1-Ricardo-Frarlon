@@ -17,6 +17,7 @@ public class MainController {
     private LinkedList<Semester> semesters;
     private User currentUser;    
     public ClassRoom currentClassRoom;
+    
 
     public MainController() {
         this.Users = new LinkedList<>();
