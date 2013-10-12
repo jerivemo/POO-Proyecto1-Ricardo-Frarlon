@@ -7,6 +7,8 @@ public class ScheduleGeneral {
 	private ClassRoom room;
 	private Professor professor;
         private ScheduleBlock shedule;
+        
+       
 
     public ScheduleGeneral(Course course, ClassRoom room, Professor professor) {
         this.course = course;
