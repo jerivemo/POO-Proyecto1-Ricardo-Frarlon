@@ -4,6 +4,17 @@
  */
 package Presentation;
 
+import Application.MainController;
+import Data.ClassRoom;
+import Data.PracticalClassroom;
+import Data.Professor;
+import Data.Student;
+import Data.TheoreticalClassroom;
+import Data.User;
+import java.util.LinkedList;
+import shedulesadministrator.ShedulesAdministrator;
+import static shedulesadministrator.ShedulesAdministrator.ins;
+
 /**
  *
  * @author Ricardo
@@ -26,10 +37,10 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        jUserName = new javax.swing.JTextField();
+        jPassword = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        btLogin1 = new javax.swing.JButton();
+        btLogin = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -38,23 +49,23 @@ public class Login extends javax.swing.JFrame {
         setBounds(new java.awt.Rectangle(500, 500, 0, 0));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 300, 40));
-        getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 180, 300, 40));
+        getContentPane().add(jUserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 300, 40));
+        getContentPane().add(jPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 180, 300, 40));
 
         jLabel1.setFont(new java.awt.Font("Batang", 2, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Schedule Administrator");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 410, 50));
 
-        btLogin1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        btLogin1.setForeground(new java.awt.Color(0, 0, 102));
-        btLogin1.setText("Sign in");
-        btLogin1.addActionListener(new java.awt.event.ActionListener() {
+        btLogin.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        btLogin.setForeground(new java.awt.Color(0, 0, 102));
+        btLogin.setText("Sign in");
+        btLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btLogin1ActionPerformed(evt);
+                btLoginActionPerformed(evt);
             }
         });
-        getContentPane().add(btLogin1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 260, 130, 50));
+        getContentPane().add(btLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 260, 130, 50));
 
         jLabel2.setFont(new java.awt.Font("Batang", 3, 14)); // NOI18N
         jLabel2.setText("Password");
@@ -87,10 +98,83 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btLogin1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLogin1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btLogin1ActionPerformed
+    private void btLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginActionPerformed
 
+        if (ins.login(jUserName.getText(), jPassword.getText())) {
+            CoordinatorHome home = new CoordinatorHome();
+            home.setVisible(true);
+            int count = ShedulesAdministrator.ins.countUsers();
+            LinkedList<User> tempUser = ShedulesAdministrator.ins.getUsers();
+            boolean firstTimeP = true;
+            boolean firstTimeS = true;
+            // ShedulesAdministrator.ins.user
+
+            //add the user the the Combobox User
+            while (count >= 0) {
+                if (tempUser.get(count) instanceof Professor && firstTimeP) {
+                    home.jComboBoxTeacher.addItem(tempUser.get(count).getId());
+                    home.jTextFieldTeacherID.setText(tempUser.get(count).getId());
+                    home.jTextFieldTeacherName.setText(tempUser.get(count).getName());
+                    home.jTextFieldTeacherDepartment.setText(((Professor) tempUser.get(count)).getDepartment().getName());
+                    home.jTextFieldStudentPassword.setText(tempUser.get(count).getPassword());
+                    home.jCheckBoxCoordinator.setSelected(((Professor) tempUser.get(count)).isCoordinator());
+                    firstTimeP = false;
+                    count--;
+                }
+                if (tempUser.get(count) instanceof Professor && !firstTimeP) {
+
+                    home.jComboBoxTeacher.addItem(tempUser.get(count).getId());
+                    count--;
+                } else if (firstTimeS) {
+                    home.jComboBoxStudent.addItem(tempUser.get(count).getId());
+                    home.jTextFieldStudentName.setText(tempUser.get(count).getName());
+                    home.jTextFieldStudentID.setText(tempUser.get(count).getId());
+                    home.jTextFieldStudentCard.setText(((Student) tempUser.get(count)).getStudentCard());
+                    home.jTextFieldStudentPassword.setText(tempUser.get(count).getPassword());
+                    firstTimeS = false;
+                    count--;
+                } else {
+                    home.jComboBoxStudent.addItem(tempUser.get(count).getId());
+                    count--;
+                }
+
+            }
+
+            int countClassRoom = ins.countClassRoom();
+            LinkedList<ClassRoom> tempClassRooms = ins.getClassRooms();
+            boolean firsTimeClass=true;
+
+            while (countClassRoom >= 0) {
+                if(firsTimeClass){
+                ins.currentClassRoom=tempClassRooms.get(countClassRoom);
+                home.jComboBoxClassRoomName.addItem(tempClassRooms.get(countClassRoom).getName());
+                home.jTextFieldClassRoomName.setText(tempClassRooms.get(countClassRoom).getName());
+                home.jTextFieldClassRoomNumber.setText(String.valueOf(tempClassRooms.get(countClassRoom).getClassRoomNumber()));
+                home.jTextFieldClassRoomCapacity.setText(String.valueOf(tempClassRooms.get(countClassRoom).getCapacity()));
+                home.jTextFieldClassRoomLocation.setText(tempClassRooms.get(countClassRoom).getLocation());
+                firsTimeClass=false;
+                if (tempClassRooms.get(countClassRoom) instanceof TheoreticalClassroom) {
+                    home.jCheckBoxAirConditioning.setSelected(((TheoreticalClassroom) tempClassRooms.get(countClassRoom)).getAirConditioning());
+                    home.jCheckBoxMultimediaItems.setSelected(((TheoreticalClassroom) tempClassRooms.get(countClassRoom)).getMultimediaEquipment());
+                    countClassRoom--;
+                }
+                if (tempClassRooms.get(countClassRoom) instanceof PracticalClassroom) {
+                    home.jTextFieldEquipmentAvailable.setText(((PracticalClassroom) tempClassRooms.get(countClassRoom)).getEquipmentAvailable());
+                    home.jTextFieldAmountEquipment.setText(String.valueOf(((PracticalClassroom) tempClassRooms.get(countClassRoom)).getAmountEquipment()));
+                    countClassRoom--;
+                }
+                
+                }
+                else{
+                 home.jComboBoxClassRoomName.addItem(tempClassRooms.get(countClassRoom).getName());
+                }
+            }
+
+
+
+
+    }//GEN-LAST:event_btLoginActionPerformed
+    }
     /**
      * @param args the command line arguments
      */
@@ -126,13 +210,13 @@ public class Login extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btLogin1;
+    public javax.swing.JButton btLogin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField3;
+    public javax.swing.JTextField jPassword;
+    public javax.swing.JTextField jUserName;
     // End of variables declaration//GEN-END:variables
 }
