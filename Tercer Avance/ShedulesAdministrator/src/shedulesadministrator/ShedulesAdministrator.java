@@ -27,6 +27,8 @@ public class ShedulesAdministrator {
         log.setVisible(true);
        // final MainController ins = new MainController();
         ins.insertUser("201042705", "Frarlon", "2", "2");
+          ins.insertUser("201042705", "Frarlon", "2", "2");
+            ins.insertUser("201042705", "Frarlon", "4", "4");
 
 }
     

@@ -78,4 +78,9 @@ public class Professor extends User {
     {
         return 1;
     }
+    
+    public int cantCourses()
+    {
+        return courses.size();
+    }
 }

@@ -2,7 +2,7 @@ package Application;
 
 import java.util.*;
 import Data.*;
-import Presentation.CoordinatorHome;
+
 
 /**
  *
@@ -11,12 +11,14 @@ import Presentation.CoordinatorHome;
 public class MainController {
     
     private LinkedList<User> Users;
-//	private LinkedList<Semester> semestrers;
     private LinkedList<ClassRoom> classRooms;
     private LinkedList<Department> departments;
     private LinkedList<Semester> semesters;
-    private User currentUser;    
+    public User currentUser;    
     public ClassRoom currentClassRoom;
+    LinkedList<ScheduleGeneral> shedule;
+    LinkedList<ScheduleGeneral> unAsignedshedule;
+    
     
 
     public MainController() {
@@ -25,6 +27,8 @@ public class MainController {
         this.classRooms = new LinkedList<>();
         this.departments = new LinkedList<>();
         //      this.courses = new LinkedList<>();
+        this.shedule = new LinkedList<>();
+        this.unAsignedshedule = new LinkedList<>();
     }
 
     /**
@@ -211,7 +215,7 @@ public class MainController {
    return classRooms;
    }
    
-       public void deleteClassRoom(String name) {
+   public void deleteClassRoom(String name) {
         
         int count = countClassRoom();
         while (count >= 0) {
@@ -221,4 +225,89 @@ public class MainController {
             count--;
         }
     }
+    
+   public void generateSchedule()
+   {                    
+       shedule=new LinkedList<>();
+       unAsignedshedule=new LinkedList<>();
+       
+       for(int ind=0;ind<Users.size();ind++)
+       {
+           if(Users.get(ind).getType()==1 && ((Professor)Users.get(ind)).cantCourses()!=0)
+           {
+               Professor tempProf = (Professor)Users.get(ind);
+               for(int ind2=0;ind2<tempProf.getCourses().size();ind2++)
+               {
+                   boolean flag=true;
+                   int ind3=0;
+                   while(flag!=true)
+                   {
+                       boolean b =generateScheduleAux(tempProf,tempProf.getCourses().get(ind2),
+                               tempProf.getPossibleSchedules().get(ind3));
+                       if(b==true)
+                       {
+                           flag=false;
+                       }else
+                       {
+                           ind3=ind+1;
+                           if(ind3==tempProf.getPossibleSchedules().size()){
+                               
+                               flag=false;
+                               ScheduleGeneral nn =new ScheduleGeneral(tempProf.getCourses().get(ind2),tempProf);
+                               unAsignedshedule.add(nn);
+                           }                          
+                       }//End While
+               }//End for
+               }//end for    
+           }//end if
+       }//end for    
+   }
+   
+    
+    /**
+     * Insert The Course in the list of Shedules
+     * @param p
+     * @param c
+     * @param sb
+     * @return
+     */
+    public boolean generateScheduleAux(Professor p,Course c, ScheduleBlock sb)
+   { 
+       
+       for(int ind=0;ind<classRooms.size();ind++)
+       {
+           if(shedule.size()==0)
+           {
+               ScheduleGeneral nn = new ScheduleGeneral(c, classRooms.get(ind), p, sb);
+               shedule.add(nn);
+               return true;
+           }else
+           {
+               for(int ind2=0;ind2<shedule.size();ind2++)
+               {
+                   ScheduleGeneral tmp=shedule.get(ind2);
+                   
+                   if(tmp.getRoom().getClassRoomNumber()!=classRooms.get(ind).getClassRoomNumber() &&
+                      tmp.getShedule().getDay().compareTo(sb.getDay())!=0 &&
+                      tmp.getShedule().getStartTime().compareTo(sb.getStartTime())!=0 &&
+                      tmp.getShedule().getEndTime().compareTo(sb.getEndTime())!=0)
+                   {
+                       ScheduleGeneral nn2 = new ScheduleGeneral(c, classRooms.get(ind), p, sb);
+                       shedule.add(nn2);
+                       return true;
+                   }// end If                   
+               }// End for    
+           } //End Else
+       }//End For
+     return false;
+   }
+    
+   public boolean isSheduleGenerated()
+   {
+       if(shedule.size()>0)
+       {
+           return true;
+       }
+       return false;
+   } 
 }
