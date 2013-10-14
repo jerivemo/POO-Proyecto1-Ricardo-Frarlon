@@ -5,8 +5,9 @@ package Data;
 public class TheoreticalCourse extends Course {
 
 	private String webNotes;
-
+    
     public TheoreticalCourse(String webNotes, String name, String courseID, int credits, int weekHours) {
+        
         super(name, courseID, credits, weekHours);
         this.webNotes = webNotes;
     }

@@ -25,6 +25,7 @@ public class Professor extends User {
      * @param id
      * @param password
      */
+    
     public Professor(Department department, boolean coordinator, String name, String id, String password) {
         super(name, id, password);
         this.department = department;

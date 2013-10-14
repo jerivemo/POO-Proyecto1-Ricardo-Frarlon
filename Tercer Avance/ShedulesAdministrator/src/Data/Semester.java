@@ -9,6 +9,7 @@ public class Semester {
 
     public Semester(int id) {
         this.id = id;
+        this.courses = new LinkedList<>();
     }
 
     public int getId() {
@@ -24,9 +25,15 @@ public class Semester {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
         
-        public Boolean insertCourse(String n) {
+        public Boolean insertCourse(Course c) {
+            courses.add(c);
 		
 	return false;
         }
+        
+      public LinkedList<Course> getListCourse(){
+      
+      return courses;
+      }
 
 }

@@ -10,7 +10,7 @@ public abstract class Course {
 	private int weekHours;
 
 	public abstract int getType();
-
+    
     public Course(String name, String courseID, int credits, int weekHours) {
         this.name = name;
         this.courseID = courseID;
